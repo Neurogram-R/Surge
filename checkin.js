@@ -50,7 +50,7 @@ function login(url, email, password, title) {
             console.log(error);
             $notification.post(title + '登录失败', error, "");
         } else {
-            if (data.msg == "邮箱或者密码错误") {
+            if (JSON.parse(data).msg == "邮箱或者密码错误") {
                 $notification.post(title + '邮箱或者密码错误', "", "");
             } else {
                 await checkin(url, title)
