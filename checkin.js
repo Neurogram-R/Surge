@@ -115,13 +115,13 @@ function dataResults(url, checkinMsg, title) {
                 result.push(`今日：${todayUsed}`)
             }
 
-            let usedData = data.match(/(Used Transfer|>过去已用|>已用)[^B]+/)
+            let usedData = data.match(/(Used Transfer|>过去已用|>已用|\"已用)[^B]+/)
             if (usedData) {
                 usedData = flowFormat(usedData[0])
                 result.push(`已用：${usedData}`)
             }
 
-            let restData = data.match(/(Remaining Transfer|>剩余流量|>可用)[^B]+/)
+            let restData = data.match(/(Remaining Transfer|>剩余流量|>可用|\"剩余)[^B]+/)
             if (restData) {
                 restData = flowFormat(restData[0])
                 result.push(`剩余：${restData}`)
@@ -139,6 +139,7 @@ function dataResults(url, checkinMsg, title) {
 }
 
 function flowFormat(data) {
+    data = data.replace(/\d+(\.\d+)*%/, "")
     let flow = data.match(/\d+(\.\d+)*\w*/)
     return flow[0] + "B"
 }
