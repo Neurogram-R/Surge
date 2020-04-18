@@ -3,12 +3,8 @@
 
 
 [URL Rewrite]
-^https:\/\/duckduckgo.com\/\?q=bd\+([^&]+).+ https://www.baidu.com/s?wd=$1 302
-^https:\/\/duckduckgo.com\/\?q=gh\+([^&]+).+ https://github.com/search?q=$1 302
-^https:\/\/duckduckgo.com\/\?q=gm\+([^&]+).+ https://www.google.com/search?&tbm=isch&q=$1 302
-^https:\/\/duckduckgo.com\/\?q=yd\+([^&]+).+ http://dict.youdao.com/search?q=$1 302
-^https:\/\/duckduckgo.com\/\?q=([^&]+).+ https://www.google.com/search?q=$1 302
-
-
-[MITM]
-hostname = %APPEND% duckduckgo.com
+^http:\/\/www.google.cn\/search\?q=bd\+([^&]+).+ https://www.baidu.com/s?wd=$1 307
+^http:\/\/www.google.cn\/search\?q=gh\+([^&]+).+ https://github.com/search\?q=$1 307
+^http:\/\/www.google.cn\/search\?q=gm\+([^&]+).+ https://www.google.com/search?&tbm=isch&q=$1 307
+^http:\/\/www.google.cn\/search\?q=yd\+([^&]+).+ http://dict.youdao.com/search\?q=$1 307
+^http:\/\/www.google.cn\/search\?q=([^&]+).+ https://www.google.com/search\?q=$1 307
