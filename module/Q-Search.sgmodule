@@ -3,9 +3,11 @@
 
 
 [URL Rewrite]
+#- Safari 内输入 命令 + 空格 + 关键词 快速指定搜索引擎搜索
+#注：先进入设置更改 Safari 默认搜索为 DuckDuckGO
 # key:bd 百度搜索
 # key:gh github搜索
-# key:gm 谷歌图片搜索
+# key:gi 谷歌图片搜索
 # key:yd 有道词典搜索
 # key:ytb YouTube视频搜索
 # key:ssp 少数派文章搜索
@@ -14,9 +16,15 @@
 # key:tb 淘宝搜索
 # key:db 豆瓣搜索
 # key:bli 哔哩哔哩搜索
+# key:so Stack Overflow
+# key:tgd xxx (t.me/gdurl 搜索 Google Drive 资源)
+# key:gd xxx (Google 搜索 Google Drive 资源)
+# key:t2e xxx (Google 译至英)
+# key:wb xxx (微博)
+# 没有指令默认google
 ^https:\/\/duckduckgo.com\/\?q=bd\+([^&]+).+ https://www.baidu.com/s?wd=$1 302
 ^https:\/\/duckduckgo.com\/\?q=gh\+([^&]+).+ https://github.com/search?q=$1 302
-^https:\/\/duckduckgo.com\/\?q=gm\+([^&]+).+ https://www.google.com/search?&tbm=isch&q=$1 302
+^https:\/\/duckduckgo.com\/\?q=gi\+([^&]+).+ https://www.google.com/search?&tbm=isch&q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=yd\+([^&]+).+ http://dict.youdao.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=ytb\+([^&]+).+ https://www.youtube.com/results?search_query=$1 302
 ^https:\/\/duckduckgo.com\/\?q=ssp\+([^&]+).+ https://sspai.com/search/post/$1 302
@@ -25,7 +33,11 @@
 ^https:\/\/duckduckgo.com\/\?q=tb\+([^&]+).+ http://s.taobao.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=([^&]+).+ https://www.google.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=db\([^&]+).+ https://www.douban.com/search?q=$1 302
+^https:\/\/duckduckgo.com\/\?q=wb\+([^&]+).+ https://s.weibo.com/weibo/$1 302
+^https:\/\/duckduckgo.com\/\?q=t2e\+([^&]+).+ https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=$1 302
+^https:\/\/duckduckgo.com\/\?q=gd\+([^&]+).+ https://www.google.com/search?q=%22Google+Drive%22+$1 302
+^https:\/\/duckduckgo.com\/\?q=tgd\+([^&]+).+ https://t.me/s/gdurl?q=$1 302
+^https:\/\/duckduckgo.com\/\?q=so\+([^&]+).+ https://stackoverflow.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=bli\([^&]+).+ https://search.bilibili.com/all?keyword=$1&from_source=banner_search 302
-
 [MITM]
 hostname = %APPEND% duckduckgo.com
