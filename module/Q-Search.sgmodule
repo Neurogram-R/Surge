@@ -31,7 +31,6 @@
 ^https:\/\/duckduckgo.com\/\?q=csdn\+([^&]+).+ https://so.csdn.net/so/search/s.do?q=$1&t=&u= 302
 ^https:\/\/duckduckgo.com\/\?q=zh\+([^&]+).+ http://www.zhihu.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=tb\+([^&]+).+ http://s.taobao.com/search?q=$1 302
-^https:\/\/duckduckgo.com\/\?q=([^&]+).+ https://www.google.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=db\([^&]+).+ https://www.douban.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=wb\+([^&]+).+ https://s.weibo.com/weibo/$1 302
 ^https:\/\/duckduckgo.com\/\?q=t2e\+([^&]+).+ https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=$1 302
@@ -39,5 +38,6 @@
 ^https:\/\/duckduckgo.com\/\?q=tgd\+([^&]+).+ https://t.me/s/gdurl?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=so\+([^&]+).+ https://stackoverflow.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=bli\([^&]+).+ https://search.bilibili.com/all?keyword=$1&from_source=banner_search 302
+^https:\/\/duckduckgo.com\/\?q=([^&]+).+ https://www.google.com/search?q=$1 302
 [MITM]
 hostname = %APPEND% duckduckgo.com
