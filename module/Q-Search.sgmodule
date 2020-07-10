@@ -31,7 +31,8 @@
 ^https:\/\/duckduckgo.com\/\?q=csdn\+([^&]+).+ https://so.csdn.net/so/search/s.do?q=$1&t=&u= 302
 ^https:\/\/duckduckgo.com\/\?q=zh\+([^&]+).+ http://www.zhihu.com/search?q=$1 302
 ^https:\/\/duckduckgo.com\/\?q=tb\+([^&]+).+ http://s.taobao.com/search?q=$1 302
-^https:\/\/duckduckgo.com\/\?q=db\([^&]+).+ https://www.douban.com/search?q=$1 302
+# ^https:\/\/duckduckgo.com\/\?q=db\([^&]+).+ https://www.douban.com/search?q=$1 302
+^https:\/\/duckduckgo.com\/\?q=db\+([^&]+).+ https://m.douban.com/search/?query=$1 302
 ^https:\/\/duckduckgo.com\/\?q=wb\+([^&]+).+ https://s.weibo.com/weibo/$1 302
 ^https:\/\/duckduckgo.com\/\?q=t2e\+([^&]+).+ https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=$1 302
 ^https:\/\/duckduckgo.com\/\?q=gd\+([^&]+).+ https://www.google.com/search?q=%22Google+Drive%22+$1 302
