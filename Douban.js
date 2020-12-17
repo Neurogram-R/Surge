@@ -1,7 +1,7 @@
 /*
 Douban Movie Add-ons for Surge by Neurogram
  - 豆瓣电影移动版网页增强
- - 快捷跳转 茶杯狐 搜索
+ - 快捷跳转 茶杯狐、奈菲影视 搜索
  - 快捷收藏电影至 Airtable
  
 关于作者
@@ -12,7 +12,7 @@ GitHub: Neurogram-R
 使用说明
 
 [Script]
-茶杯狐
+茶杯狐、奈菲影视
 http-response ^https://m.douban.com/movie/subject/.+ script-path=Douban.js,requires-body=true,max-size=307200
 
 Airtable 收藏
