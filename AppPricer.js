@@ -1,13 +1,9 @@
 /*
+
 App Pricer for Surge by Neurogram
 
  - App 价格监控
- 
-使用说明：https://www.notion.so/neurogram/App-Pricer-bb7f6877caa24e8584cc63bddf6e555a
 
-关于作者
-Telegram: Neurogram
-GitHub: Neurogram-R
 */
 
 const region = "cn"
