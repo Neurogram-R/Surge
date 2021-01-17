@@ -1,13 +1,9 @@
 /*
 Douban Movie Add-ons for Surge by Neurogram
+
  - 豆瓣电影移动版网页增强
  - 快捷跳转 茶杯狐、奈菲影视、555电影 搜索
  - 快捷收藏电影至 Airtable
- 
-关于作者
-Telegram: Neurogram
-GitHub: Neurogram-R
-
 
 使用说明
 
@@ -33,9 +29,9 @@ if (!seen) {
     let title = body.match(/"sub-title">([^<]+)/)
     if (title) {
 
-        let mweb = `<a href="https://www.cupfox.com/search?key=${title[1]}"><img src="https://sg.catbox.moe/c8vszl.png" height="25" width="34.78" style="vertical-align: text-top;" /></a>
-        <a href="https://www.nfmovies.com/search.php?searchword=${title[1]}"><img src="https://sg.catbox.moe/gog93l.png" height="25" width="20.11" style="vertical-align: text-top;" /></a>
-<a href="https://www.o8tv.com/index.php/vod/search.html?wd=${title[1]}&submit="><img src="https://sg.catbox.moe/27bzxu.png" height="25" width="25" style="vertical-align: text-top;" /></a>`
+        let mweb = `<a href="https://www.cupfox.com/search?key=${title[1]}"><img src="https://files.catbox.moe/c8vszl.png" height="25" width="34.78" style="vertical-align: text-top;" /></a>
+        <a href="https://www.nfmovies.com/search.php?searchword=${title[1]}"><img src="https://files.catbox.moe/gog93l.png" height="25" width="20.11" style="vertical-align: text-top;" /></a>
+<a href="https://www.o8tv.com/index.php/vod/search.html?wd=${title[1]}&submit="><img src="https://files.catbox.moe/27bzxu.png" height="25" width="25" style="vertical-align: text-top;" /></a>`
 
         body = body.replace(/("sub-title">.+?)(<\/div>)/, `$1${mweb}$2`)
 
