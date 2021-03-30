@@ -45,7 +45,14 @@ if (!seen) {
         $done({})
     }
 } else {
-    $httpClient.get(`https://api.douban.com/v2/movie/subject/${movieId[1]}?apikey=0df993c66c0c636e29ecbb5344252a4a`, function (error, response, data) {
+    let options = {
+        url: `https://frodo.douban.com/api/v2/movie/${movieId[1]}?apiKey=0ac44ae016490db2204ce0a042db2916`,
+        headers: {
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.3(0x18000323) NetType/WIFI Language/en",
+            "Referer": "https://servicewechat.com/wx2f9b06c1de1ccfca/82/page-frame.html"
+        }
+    }
+    $httpClient.get(options, function (error, response, data) {
         let info = JSON.parse(data)
         if (error) {
             $notification.post('获取影片信息失败', error, "");
