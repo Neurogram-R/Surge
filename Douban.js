@@ -88,7 +88,7 @@ if (!seen) {
                                 "Actors": casts.replace(/\s\/\s$/, ""),
                                 "Director": directors.replace(/\s\/\s$/, ""),
                                 "Genre": info.genres.toString(),
-                                "Douban": "https://movie.douban.com/subject/" + movieId,
+                                "Douban": "https://movie.douban.com/subject/" + movieId[1],
                                 "Rating": info.rating.average,
                                 "Year": info.year
                             }
