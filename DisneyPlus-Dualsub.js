@@ -34,8 +34,11 @@ if (url.match(/\.m3u8/)) {
     let subtitles_data_url = body.match(patt)
 
     if (subtitles_data_url) {
+
+        let subtitles_data_link = `${host}/${subtitles_data_url[1]}`
+
         let options = {
-            url: `${host}/${subtitles_data_url[1]}`,
+            url: subtitles_data_link,
             headers: headers
         }
 
@@ -43,6 +46,12 @@ if (url.match(/\.m3u8/)) {
             let subtitles_data = data.match(/.+-MAIN.+\.vtt/g)
 
             if (subtitles_data) $persistentStore.write(subtitles_data.join("\n"))
+
+            if (subtitles_data_link.match(/.+-MAIN.+/) && data.match(/,\nseg.+\.vtt/g)) {
+                subtitles_data = data.match(/,\nseg.+\.vtt/g)
+                let url_path = subtitles_data_link.match(/\/r\/(.+)/)[1].replace(/\w+\.m3u8/, "")
+                $persistentStore.write(subtitles_data.join("\n").replace(/,\n/g, url_path))
+            }
 
             $done({ body })
         })
