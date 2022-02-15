@@ -65,6 +65,12 @@ if (url.match(/\.vtt/) && subtitles_urls_data != "null") {
 async function merge_subtitles(subtitles_urls_data) {
     let result = []
 
+    let subtitles_index = parseInt(url.match(/(\d+)\.vtt/)[1])
+
+    let start = subtitles_index - 3 < 0 ? 0 : subtitles_index - 3
+
+    subtitles_urls_data = subtitles_urls_data.slice(start, subtitles_index + 4);
+
     for (var k in subtitles_urls_data) {
         let options = {
             url: `${host}/r/${subtitles_urls_data[k]}`,
