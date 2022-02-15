@@ -40,12 +40,9 @@ if (url.match(/\.m3u8/)) {
         }
 
         $httpClient.get(options, function (error, response, data) {
-            let subtitles_data = data.match(/#EXT-X-DISCONTINUITY\n(#EXTINF.+\n.+\n)+/)
+            let subtitles_data = data.match(/.+-MAIN.+\.vtt/g)
 
-            if (subtitles_data) {
-                subtitles_urls = subtitles_data[0].match(/.+\.vtt/g)
-                $persistentStore.write(subtitles_urls.join("\n"))
-            }
+            if (subtitles_data) $persistentStore.write(subtitles_data.join("\n"))
 
             $done({ body })
         })
