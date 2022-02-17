@@ -7,7 +7,7 @@
         - Customized language support
  
     Manual：
-        Shortcuts: "https://www.icloud.com/shortcuts/6174b5832d49457b80405ac0d067aaed"
+        Shortcuts: https://www.icloud.com/shortcuts/6174b5832d49457b80405ac0d067aaed
 
         Surge:
 
