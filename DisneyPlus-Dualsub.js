@@ -149,7 +149,7 @@ async function machine_subtitles(type) {
             let sentences = trans.sentences
 
             for (let k in sentences) {
-                if (sentences[k].trans) t_sentences.push(sentences[k].trans.replace(/\n$/g, "").replace(/\n/g, " "))
+                if (sentences[k].trans) t_sentences.push(sentences[k].trans.replace(/\n$/g, "").replace(/\n/g, " ").replace(/〜/g, "~"))
             }
 
             t_sentences = t_sentences.join(" ").match(/~\d+~[^~]+/g)
