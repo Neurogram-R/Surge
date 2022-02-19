@@ -6,7 +6,7 @@
         - Machine translation support (Google, DeepL)
         - Customized language support
  
-    Manual：
+    Manual:
         Shortcuts: https://www.icloud.com/shortcuts/aa6056ad31c14f25aedbee6cd1d7a799
 
         Surge:
