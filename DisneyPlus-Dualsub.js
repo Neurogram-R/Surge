@@ -29,11 +29,11 @@ let headers = $request.headers
 let setting = $persistentStore.read()
 
 if (!setting || !setting.match(/{/)) setting = {
-    type: "Official", // Official、Google、DeepL、Disable
+    type: "Official", // Official, Google, DeepL, Disable
     lang: "English [CC]",
     sl: "zh-CN",
     tl: "en",
-    line: "s", // f、s
+    line: "s", // f, s
     dkey: "null", // DeepL API key
     subtitles: "null"
 }
