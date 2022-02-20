@@ -57,8 +57,8 @@ if (url.match(/action=set/)) {
 
 let body = $response.body
 
-if (setting.type == "Disable") $done({ body })
-if (setting.type != "Official" && url.match(/\.m3u8/)) $done({ body })
+if (setting.type == "Disable") $done({})
+if (setting.type != "Official" && url.match(/\.m3u8/)) $done({})
 
 let subtitles_urls_data = setting.subtitles
 
@@ -94,17 +94,17 @@ if (setting.type == "Official" && url.match(/\.m3u8/)) {
                 $persistentStore.write(JSON.stringify(setting))
             }
 
-            $done({ body })
+            $done({})
         })
 
     }
 
-    if (!body.match(patt)) $done({ body })
+    if (!body.match(patt)) $done({})
 }
 
 if (url.match(/\.vtt/)) {
     if (setting.type == "Official") {
-        if (subtitles_urls_data == "null") $done({ body })
+        if (subtitles_urls_data == "null") $done({})
         subtitles_urls_data = subtitles_urls_data.match(/.+\.vtt/g)
         if (subtitles_urls_data) official_subtitles(subtitles_urls_data)
     }
@@ -147,7 +147,7 @@ async function machine_subtitles(type) {
         if (trans.sentences) {
             let sentences = trans.sentences
 
-            for (let k in sentences) {
+            for (var k in sentences) {
                 if (sentences[k].trans) t_sentences.push(sentences[k].trans.replace(/\n$/g, "").replace(/\n/g, " ").replace(/〜/g, "~"))
             }
 
