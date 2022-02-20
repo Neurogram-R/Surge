@@ -120,7 +120,7 @@ async function machine_subtitles(type) {
 
     let dialogue = body.match(/\d+:\d\d:\d\d.\d\d\d -->.+line.+,end\n.+/g)
 
-    if (!dialogue) $done({ body })
+    if (!dialogue) $done({})
 
     let timeline = body.match(/\d+:\d\d:\d\d.\d\d\d -->.+line.+,end/g)
 
