@@ -12,7 +12,7 @@
         Surge:
 
         [Script]
-        DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.dssott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=true,max-size=0,script-path=DisneyPlus-Dualsub.js
+        DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.dssott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=1,max-size=0,timeout=30,script-path=DisneyPlus-Dualsub.js
         DisneyPlus-Dualsub-Setting = type=http-request,pattern=https:\/\/.+media.dssott.com\/ps01\/disney\?action=(get|set),requires-body=1,max-size=0,script-path=DisneyPlus-Dualsub.js
  
         [MITM]
