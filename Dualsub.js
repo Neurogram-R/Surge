@@ -23,7 +23,7 @@
         DisneyPlus-Dualsub-Setting = type=http-request,pattern=https:\/\/.+media.(dss|star)ott.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
  
         HBO-Max-Dualsub = type=http-response,pattern=https:\/\/(manifests.v2.api.hbo.com|.+hbomaxcdn.com)\/(hls.m3u8.+|video.+\.vtt$),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
-        HBO-Max-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.hbomaxcdn.com\/vtt\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
+        HBO-Max-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.hbomaxcdn.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
         Netflix-Dualsub = type=http-response,pattern=https:\/\/.+nflxvideo.net\/\?o=\d+&v=\d+&e=.+,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         Netflix-Dualsub-Setting = type=http-request,pattern=https:\/\/.+nflxvideo.net\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
