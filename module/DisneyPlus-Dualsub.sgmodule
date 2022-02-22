@@ -1,5 +1,5 @@
 #!name=DisneyPlus Dualsub
-#!desc=Disney+ subtitles add-ons
+#!desc=Disney+, Star+ subtitles add-ons
 
 [Script]
 DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.(dss|star)ott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=1,max-size=0,timeout=30,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Dualsub.js
