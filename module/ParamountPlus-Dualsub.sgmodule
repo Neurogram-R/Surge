@@ -2,8 +2,8 @@
 #!desc=Paramount+ subtitles add-ons
 
 [Script]
-ParamountPlus-Dualsub = type=http-response,pattern=https:\/\/.+cbs(aa|i)video.com\/.+\.vtt(\?m=\d+)*,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
-ParamountPlus-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cbsivideo.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
+ParamountPlus-Dualsub = type=http-response,pattern=https:\/\/.+cbs(aa|i)video.com\/.+\.vtt(\?m=\d+)*,requires-body=1,max-size=0,timeout=30,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Dualsub.js
+ParamountPlus-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cbsivideo.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Dualsub.js
 
 [MITM]
 hostname = %APPEND% *.cbsaavideo.com, *.cbsivideo.com
