@@ -8,7 +8,7 @@
         - Customized language support
  
     Manual:
-        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/511b3978ff284d39ab15a7191435c1d9
+        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/b7e3c6824af44ce3b4508018943f4237
 
         Surge:
 
