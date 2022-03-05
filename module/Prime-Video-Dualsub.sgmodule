@@ -1,0 +1,9 @@
+#!name=Prime Video Dualsub
+#!desc=Prime Video subtitles add-ons
+
+[Script]
+Prime-Video-Dualsub = type=http-response,pattern=https:\/\/.+(cloudfront|akamaihd|avi-cdn).net\/(.+\.vtt|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Dualsub.js
+Prime-Video-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cloudfront.net\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Dualsub.js
+
+[MITM]
+hostname = %APPEND% *.cloudfront.net, *.akamaihd.net, *.avi-cdn.net
