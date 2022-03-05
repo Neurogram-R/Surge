@@ -1,22 +1,22 @@
 /*
     Dualsub for Surge by Neurogram
  
-        - Disney+, Star+, HBO Max official bilingual subtitles
-        - Disney+, Star+, HBO Max, Netflix, Paramount+ external subtitles
-        - Disney+, Star+, HBO Max, Netflix, Paramount+ machine translation bilingual subtitles (Google, DeepL)
+        - Disney+, Star+, HBO Max, Prime Video official bilingual subtitles
+        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video external subtitles
+        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video machine translation bilingual subtitles (Google, DeepL)
         - YouTube subtitles auto-translate
         - Customized language support
  
     Manual:
-        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/b7e3c6824af44ce3b4508018943f4237
+        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/ef414e6c844045e6857243e350123398
 
         Surge:
 
         [Script]
 
         // all in one
-        Dualsub = type=http-response,pattern=https:\/\/.*(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video).(com|net)\/((.+(\.vtt(\?m=\d+)*|-all-.+.m3u8.*))|hls.m3u8.+|\?o=\d+&v=\d+&e=.+),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
-        Dualsub-setting = type=http-request,pattern=https:\/\/(setting|www).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
+        Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim).(com|net)\/((.+(\.vtt(\?m=\d+)*|-all-.+\.m3u8.*))|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Dualsub-setting = type=http-request,pattern=^http.+(setting|www).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
 
         // individual
         DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.(dss|star)ott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
@@ -25,16 +25,22 @@
         HBO-Max-Dualsub = type=http-response,pattern=https:\/\/(manifests.v2.api.hbo.com|.+hbomaxcdn.com)\/(hls.m3u8.+|video.+\.vtt),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         HBO-Max-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.hbomaxcdn.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
+        Hulu-Dualsub = type=http-response,pattern=^http.+huluim.com\/.+\.vtt,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Hulu-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.huluim.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
+
         Netflix-Dualsub = type=http-response,pattern=https:\/\/.+nflxvideo.net\/\?o=\d+&v=\d+&e=.+,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         Netflix-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.nflxvideo.net\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
         ParamountPlus-Dualsub = type=http-response,pattern=https:\/\/.+cbs(aa|i)video.com\/.+\.vtt(\?m=\d+)*,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         ParamountPlus-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cbsivideo.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
+        Prime-Video-Dualsub = type=http-response,pattern=https:\/\/.+(cloudfront|akamaihd|avi-cdn).net\/(.+\.vtt|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Prime-Video-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cloudfront.net\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
+
         YouTube-Subtrans = type=http-request,pattern=https:\/\/(setting|www).youtube.com\/(api\/timedtext.+|\?action=(g|s)et),requires-body=1,max-size=0,script-path=Dualsub.js
 
         [MITM]
-        hostname = *.media.dssott.com, *.media.starott.com, *.api.hbo.com, *.hbomaxcdn.com, *.nflxvideo.net, *.cbsaavideo.com, *.cbsivideo.com, *.youtube.com
+        hostname = *.media.dssott.com, *.media.starott.com, *.api.hbo.com, *.hbomaxcdn.com, *.huluim.com, *.nflxvideo.net, *.cbsaavideo.com, *.cbsivideo.com, *.cloudfront.net, *.akamaihd.net, *.avi-cdn.net, *.youtube.com
 
     Author:
         Telegram: Neurogram
@@ -66,6 +72,22 @@ let default_settings = {
         lang: "English CC",
         sl: "auto",
         tl: "en-US SDH",
+        line: "s", // f, s
+        dkey: "null", // DeepL API key
+        s_subtitles_url: "null",
+        t_subtitles_url: "null",
+        subtitles: "null",
+        subtitles_type: "null",
+        subtitles_sl: "null",
+        subtitles_tl: "null",
+        subtitles_line: "null",
+        external_subtitles: "null"
+    },
+    Hulu: {
+        type: "Google", // Google, DeepL, External, Disable
+        lang: "English",
+        sl: "auto",
+        tl: "en",
         line: "s", // f, s
         dkey: "null", // DeepL API key
         s_subtitles_url: "null",
@@ -109,6 +131,22 @@ let default_settings = {
         subtitles_line: "null",
         external_subtitles: "null"
     },
+    PrimeVideo: {
+        type: "Official", // Official, Google, DeepL, External, Disable
+        lang: "English [CC]",
+        sl: "auto",
+        tl: "English [CC]",
+        line: "s", // f, s
+        dkey: "null", // DeepL API key
+        s_subtitles_url: "null",
+        t_subtitles_url: "null",
+        subtitles: "null",
+        subtitles_type: "null",
+        subtitles_sl: "null",
+        subtitles_tl: "null",
+        subtitles_line: "null",
+        external_subtitles: "null"
+    },
     YouTube: {
         type: "Enable", // Enable, Disable
         lang: "English",
@@ -126,8 +164,10 @@ if (typeof (settings) == "string") settings = JSON.parse(settings)
 let service = ""
 if (url.match(/(dss|star)ott.com/)) service = "Disney"
 if (url.match(/hbo(maxcdn)*.com/)) service = "HBOMax"
+if (url.match(/huluim.com/)) service = "Hulu"
 if (url.match(/nflxvideo.net/)) service = "Netflix"
 if (url.match(/cbs(aa|i)video.com/)) service = "Paramount"
+if (url.match(/(cloudfront|akamaihd|avi-cdn).net/)) service = "PrimeVideo"
 if (url.match(/youtube.com/)) service = "YouTube"
 
 if (!service) $done({})
@@ -185,9 +225,6 @@ if (!body) $done({})
 
 let subtitles_urls_data = setting.t_subtitles_url
 
-let host = url.match(/https.+media.(dss|star)ott.com\/ps01\/disney\/[^\/]+\//)
-host = host ? host[0] : ""
-
 if (setting.type == "Official" && url.match(/\.m3u8/)) {
     settings[service].t_subtitles_url = "null"
     $persistentStore.write(JSON.stringify(settings))
@@ -196,7 +233,15 @@ if (setting.type == "Official" && url.match(/\.m3u8/)) {
 
     if (body.match(patt)) {
 
+        let host = ""
+        if (service == "Disney") host = url.match(/https.+media.(dss|star)ott.com\/ps01\/disney\/[^\/]+\//)[0]
+
         let subtitles_data_link = `${host}${body.match(patt)[1]}`
+
+        if (service == "PrimeVideo") {
+            correct_host = subtitles_data_link.match(/https:\/\/(.+(cloudfront|akamaihd|avi-cdn).net)/)[1]
+            headers.Host = correct_host
+        }
 
         let options = {
             url: subtitles_data_link,
@@ -204,18 +249,25 @@ if (setting.type == "Official" && url.match(/\.m3u8/)) {
         }
 
         $httpClient.get(options, function (error, response, data) {
-            let subtitles_data = data.match(/http.+\.vtt/g)
+            let subtitles_data = ""
             if (service == "Disney") subtitles_data = data.match(/.+-MAIN.+\.vtt/g)
+            if (service == "HBOMax") subtitles_data = data.match(/http.+\.vtt/g)
+            if (service == "PrimeVideo") subtitles_data = data.match(/.+\.vtt/g)
+
+            if (service == "Disney") host = host + "r/"
+            if (service == "PrimeVideo") host = subtitles_data_link.match(/https.+\//)[0]
 
             if (subtitles_data) {
-                settings[service].t_subtitles_url = subtitles_data.join("\n")
+                subtitles_data = subtitles_data.join("\n")
+                if (service == "Disney" || service == "PrimeVideo") subtitles_data = subtitles_data.replace(/(.+)/g, `${host}$1`)
+                settings[service].t_subtitles_url = subtitles_data
                 $persistentStore.write(JSON.stringify(settings))
             }
 
             if (service == "Disney" && subtitles_data_link.match(/.+-MAIN.+/) && data.match(/,\nseg.+\.vtt/g)) {
                 subtitles_data = data.match(/,\nseg.+\.vtt/g)
                 let url_path = subtitles_data_link.match(/\/r\/(.+)/)[1].replace(/\w+\.m3u8/, "")
-                settings[service].t_subtitles_url = subtitles_data.join("\n").replace(/,\n/g, url_path)
+                settings[service].t_subtitles_url = subtitles_data.join("\n").replace(/,\n/g, hots + url_path)
                 $persistentStore.write(JSON.stringify(settings))
             }
 
@@ -265,7 +317,7 @@ async function machine_subtitles(type) {
 
     let s_sentences = []
     for (var i in dialogue) {
-        s_sentences.push(`${type == "Google" ? "~" + i + "~" : "&text="}${dialogue[i].replace(/<\/*(c\.[^>]+|i)>/g, "").replace(/\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n/, "")}`)
+        s_sentences.push(`${type == "Google" ? "~" + i + "~" : "&text="}${dialogue[i].replace(/<\/*(c\.[^>]+|i|c)>/g, "").replace(/\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n/, "")}`)
     }
     s_sentences = groupAgain(s_sentences, type == "Google" ? 80 : 50)
 
@@ -352,15 +404,17 @@ async function machine_subtitles(type) {
 async function official_subtitles(subtitles_urls_data) {
     let result = []
 
-    let subtitles_index = parseInt(url.match(/(\d+)\.vtt/)[1])
+    if (service == "Disney" || service == "HBOMax") {
+        let subtitles_index = parseInt(url.match(/(\d+)\.vtt/)[1])
 
-    let start = subtitles_index - 3 < 0 ? 0 : subtitles_index - 3
+        let start = subtitles_index - 3 < 0 ? 0 : subtitles_index - 3
 
-    subtitles_urls_data = subtitles_urls_data.slice(start, subtitles_index + 4)
+        subtitles_urls_data = subtitles_urls_data.slice(start, subtitles_index + 4)
+    }
 
     for (var k in subtitles_urls_data) {
         let options = {
-            url: `${host ? host + "r/" : ""}${subtitles_urls_data[k]}`,
+            url: subtitles_urls_data[k],
             headers: headers
         }
         result.push(await send_request(options, "get"))
