@@ -15,7 +15,7 @@
         [Script]
 
         // all in one
-        Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim).(com|net)\/((.+(\.vtt(\?m=\d+)*|-all-.+\.m3u8.*))|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim).(com|net)\/(.+\.vtt($|\?m=\d+)|.+-all-.+\.m3u8.*|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         Dualsub-setting = type=http-request,pattern=^http.+(setting|www).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
 
         // individual
@@ -25,7 +25,7 @@
         HBO-Max-Dualsub = type=http-response,pattern=https:\/\/(manifests.v2.api.hbo.com|.+hbomaxcdn.com)\/(hls.m3u8.+|video.+\.vtt),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         HBO-Max-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.hbomaxcdn.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
-        Hulu-Dualsub = type=http-response,pattern=^http.+huluim.com\/.+\.vtt,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Hulu-Dualsub = type=http-response,pattern=^http.+huluim.com\/.+\.vtt$,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         Hulu-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.huluim.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
         Netflix-Dualsub = type=http-response,pattern=https:\/\/.+nflxvideo.net\/\?o=\d+&v=\d+&e=.+,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
