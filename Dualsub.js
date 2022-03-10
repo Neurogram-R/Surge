@@ -2,13 +2,13 @@
     Dualsub for Surge by Neurogram
  
         - Disney+, Star+, HBO Max, Prime Video official bilingual subtitles
-        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video external subtitles
-        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video machine translation bilingual subtitles (Google, DeepL)
+        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video, etc. external subtitles
+        - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video, etc. machine translation bilingual subtitles (Google, DeepL)
         - YouTube subtitles auto-translate
         - Customized language support
  
     Manual:
-        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/cfa040f8b34141569eb8ea82b1808acb
+        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/990e4ddb3297475c8a0d66609dc9e8d9
 
         Surge:
 
@@ -16,7 +16,7 @@
 
         // all in one
         Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim).(com|net)\/(.+\.vtt($|\?m=\d+)|.+-all-.+\.m3u8.*|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
-        Dualsub-setting = type=http-request,pattern=^http.+(setting|www).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
+        Dualsub-setting = type=http-request,pattern=^http.+(setting|www|general).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
 
         // individual
         DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.(dss|star)ott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
@@ -147,6 +147,23 @@ let default_settings = {
         subtitles_line: "null",
         external_subtitles: "null"
     },
+    General: {
+        service: "null",
+        type: "Google", // Google, DeepL, External, Disable
+        lang: "English",
+        sl: "auto",
+        tl: "en",
+        line: "s", // f, s
+        dkey: "null", // DeepL API key
+        s_subtitles_url: "null",
+        t_subtitles_url: "null",
+        subtitles: "null",
+        subtitles_type: "null",
+        subtitles_sl: "null",
+        subtitles_tl: "null",
+        subtitles_line: "null",
+        external_subtitles: "null"
+    },
     YouTube: {
         type: "Enable", // Enable, Disable
         lang: "English",
@@ -168,7 +185,19 @@ if (url.match(/huluim.com/)) service = "Hulu"
 if (url.match(/nflxvideo.net/)) service = "Netflix"
 if (url.match(/cbs(aa|i)video.com/)) service = "Paramount"
 if (url.match(/(cloudfront|akamaihd|avi-cdn).net/)) service = "PrimeVideo"
+if (url.match(/general.media/)) service = "General"
 if (url.match(/youtube.com/)) service = "YouTube"
+
+if (settings.General) {
+    let general_service = settings.General.service.split(", ")
+    for (var s in general_service) {
+        let patt = new RegExp(general_service[s])
+        if (url.match(patt)) {
+            service = "General"
+            break
+        }
+    }
+}
 
 if (!service) $done({})
 
@@ -186,6 +215,7 @@ if (url.match(/action=set/)) {
     let new_setting = JSON.parse($request.body)
     if (new_setting.type != "External") settings[service].external_subtitles = "null"
     if (new_setting.type == "Reset") new_setting = default_settings[service]
+    if (new_setting.service && service == "General") settings[service].service = new_setting.service.replace(/\r/g, "")
     if (new_setting.type) settings[service].type = new_setting.type
     if (new_setting.lang) settings[service].lang = new_setting.lang
     if (new_setting.sl) settings[service].sl = new_setting.sl
@@ -279,7 +309,7 @@ if (setting.type == "Official" && url.match(/\.m3u8/)) {
     if (!body.match(patt)) $done({})
 }
 
-if (url.match(/\.vtt/) || service == "Netflix") {
+if (url.match(/\.(web)?vtt/) || service == "Netflix") {
     if (service != "Netflix" && url == setting.s_subtitles_url && setting.subtitles != "null" && setting.subtitles_type == setting.type && setting.subtitles_sl == setting.sl && setting.subtitles_tl == setting.tl && setting.subtitles_line == setting.line) $done({ body: setting.subtitles })
 
     if (setting.type == "Official") {
