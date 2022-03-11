@@ -335,7 +335,8 @@ function external_subtitles() {
 }
 
 async function machine_subtitles(type) {
-
+    
+    body = body.replace(/\s\n/g, "\n")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
 
@@ -449,7 +450,8 @@ async function official_subtitles(subtitles_urls_data) {
         }
         result.push(await send_request(options, "get"))
     }
-
+    
+    body = body.replace(/\s\n/g, "\n")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
 
