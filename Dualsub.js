@@ -309,7 +309,7 @@ if (setting.type == "Official" && url.match(/\.m3u8/)) {
     if (!body.match(patt)) $done({})
 }
 
-if (url.match(/\.(web)?vtt/) || service == "Netflix") {
+if (url.match(/\.(web)?vtt/) || service == "Netflix" || service == "General") {
     if (service != "Netflix" && url == setting.s_subtitles_url && setting.subtitles != "null" && setting.subtitles_type == setting.type && setting.subtitles_sl == setting.sl && setting.subtitles_tl == setting.tl && setting.subtitles_line == setting.line) $done({ body: setting.subtitles })
 
     if (setting.type == "Official") {
