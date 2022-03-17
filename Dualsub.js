@@ -1,22 +1,21 @@
 /*
     Dualsub for Surge by Neurogram
  
-        - Disney+, Star+, HBO Max, Prime Video official bilingual subtitles
+        - Disney+, Star+, HBO Max, Prime Video, YouTube official bilingual subtitles
         - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video, etc. external subtitles
         - Disney+, Star+, HBO Max, Hulu, Netflix, Paramount+, Prime Video, etc. machine translation bilingual subtitles (Google, DeepL)
-        - YouTube subtitles auto-translate
         - Customized language support
  
     Manual:
-        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/990e4ddb3297475c8a0d66609dc9e8d9
+        Setting tool for Shortcuts: https://www.icloud.com/shortcuts/8ec4a2a3af514282bf27a11050f39fc2
 
         Surge:
 
         [Script]
 
         // all in one
-        Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim).(com|net)\/(.+\.vtt($|\?m=\d+)|.+-all-.+\.m3u8.*|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
-        Dualsub-setting = type=http-request,pattern=^http.+(setting|www|general).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/(\?action=(g|s)et|api\/timedtext.+),requires-body=1,max-size=0,script-path=Dualsub.js
+        Dualsub = type=http-response,pattern=^http.+(media.(dss|star)ott|manifests.v2.api.hbo|hbomaxcdn|nflxvideo|cbs(aa|i)video|cloudfront|akamaihd|avi-cdn|huluim|youtube).(com|net)\/(.+\.vtt($|\?m=\d+)|.+-all-.+\.m3u8.*|hls\.m3u8.+|\?o=\d+&v=\d+&e=.+|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8|api\/timedtext.+),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        Dualsub-setting = type=http-request,pattern=^http.+(setting|general).(media.dssott|hbomaxcdn|nflxvideo|youtube|cbsivideo|cloudfront|huluim).(com|net)\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
         // individual
         DisneyPlus-Dualsub = type=http-response,pattern=https:\/\/.+media.(dss|star)ott.com\/ps01\/disney\/.+(\.vtt|-all-.+\.m3u8.*),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
@@ -37,7 +36,8 @@
         Prime-Video-Dualsub = type=http-response,pattern=https:\/\/.+(cloudfront|akamaihd|avi-cdn).net\/(.+\.vtt|\w+\/2\$.+\/[a-zA-Z0-9-]+\.m3u8),requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
         Prime-Video-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.cloudfront.net\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
-        YouTube-Subtrans = type=http-request,pattern=https:\/\/(setting|www).youtube.com\/(api\/timedtext.+|\?action=(g|s)et),requires-body=1,max-size=0,script-path=Dualsub.js
+        YouTube-Dualsub = type=http-response,pattern=https:\/\/www.youtube.com\/api\/timedtext.+,requires-body=1,max-size=0,timeout=30,script-path=Dualsub.js
+        YouTube-Dualsub-Setting = type=http-request,pattern=https:\/\/setting.youtube.com\/\?action=(g|s)et,requires-body=1,max-size=0,script-path=Dualsub.js
 
         [MITM]
         hostname = *.media.dssott.com, *.media.starott.com, *.api.hbo.com, *.hbomaxcdn.com, *.huluim.com, *.nflxvideo.net, *.cbsaavideo.com, *.cbsivideo.com, *.cloudfront.net, *.akamaihd.net, *.avi-cdn.net, *.youtube.com
@@ -169,6 +169,7 @@ let default_settings = {
         lang: "English",
         sl: "auto",
         tl: "en",
+        line: "sl"
     }
 }
 
@@ -221,7 +222,7 @@ if (url.match(/action=set/)) {
     if (new_setting.sl) settings[service].sl = new_setting.sl
     if (new_setting.tl) settings[service].tl = new_setting.tl
     if (new_setting.line) settings[service].line = new_setting.line
-    if (new_setting.dkey) settings[service].dkey = new_setting.dkey
+    if (new_setting.dkey && service != "YouTube") settings[service].dkey = new_setting.dkey
     if (new_setting.s_subtitles_url) settings[service].s_subtitles_url = new_setting.s_subtitles_url
     if (new_setting.t_subtitles_url) settings[service].t_subtitles_url = new_setting.t_subtitles_url
     if (new_setting.subtitles) settings[service].subtitles = new_setting.subtitles
@@ -239,19 +240,49 @@ if (url.match(/action=set/)) {
 
 if (setting.type == "Disable") $done({})
 
-if (service == "YouTube") {
-    let patt = new RegExp(`lang=${setting.tl}`)
-
-    if (url.match(patt) || url.match(/&tlang=/)) $done({})
-
-    $done({ url: `${url}&tlang=${setting.tl == "zh-CN" ? "zh-Hans" : setting.tl == "zh-TW" ? "zh-Hant" : setting.tl}` })
-}
-
 if (setting.type != "Official" && url.match(/\.m3u8/)) $done({})
 
 let body = $response.body
 
 if (!body) $done({})
+
+if (service == "YouTube") {
+
+    let patt = new RegExp(`lang=${setting.tl}`)
+
+    if (url.replace(/&lang=zh&/, "&lang=zh-CN&").match(patt) || url.match(/&tlang=/)) $done({})
+
+    let t_url = `${url}&tlang=${setting.tl == "zh-CN" ? "zh-Hans" : setting.tl == "zh-TW" ? "zh-Hant" : setting.tl}`
+
+    let options = {
+        url: t_url,
+        headers: headers
+    }
+
+    $httpClient.get(options, function (error, response, data) {
+
+        if (setting.line == "sl") $done({ body: data })
+        let timeline = body.match(/<p t="\d+" d="\d+">/g)
+
+        if (url.match(/&kind=asr/)) {
+            body = body.replace(/<\/?s[^>]*>/g, "")
+            data = data.replace(/<\/?s[^>]*>/g, "")
+            timeline = body.match(/<p t="\d+" d="\d+"[^>]+>/g)
+        }
+
+        for (var i in timeline) {
+            let patt = new RegExp(`${timeline[i]}([^<]+)<\\/p>`)
+            if (body.match(patt) && data.match(patt)) {
+                if (setting.line == "s") body = body.replace(patt, `${timeline[i]}$1\n${data.match(patt)[1]}</p>`)
+                if (setting.line == "f") body = body.replace(patt, `${timeline[i]}${data.match(patt)[1]}\n$1</p>`)
+            }
+        }
+
+        $done({ body })
+
+    })
+
+}
 
 let subtitles_urls_data = setting.t_subtitles_url
 
@@ -335,7 +366,7 @@ function external_subtitles() {
 }
 
 async function machine_subtitles(type) {
-    
+
     body = body.replace(/\r/g, "")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
@@ -450,7 +481,7 @@ async function official_subtitles(subtitles_urls_data) {
         }
         result.push(await send_request(options, "get"))
     }
-    
+
     body = body.replace(/\r/g, "")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
     body = body.replace(/(\d+:\d\d:\d\d.\d\d\d --> \d+:\d\d:\d\d.\d.+\n.+)\n(.+)/g, "$1 $2")
