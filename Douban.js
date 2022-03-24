@@ -9,7 +9,7 @@
     使用说明
 
         [Script]
-        // 茶杯狐
+        // 茶杯狐、流媒体
         http-response ^https://m.douban.com/movie/subject/.+ script-path=Douban.js,requires-body=true,max-size=307200
 
         // Airtable 收藏
