@@ -30,7 +30,7 @@ let url = $request.url
 let movieId = url.match(/subject\/(\d+)/)
 let seen = url.match(/\?seen=(\d)$/)
 let collect = false  //收藏功能，默认关闭，需自行配置
-
+let region = "US" //流媒体区域
 let tmdb_api_key = "" // TMDB API KEY
 
 if (!seen) douban_addons()
@@ -69,10 +69,10 @@ async function douban_addons() {
 
             let tmdb_providers = await send_request(providers_query_options, "get")
 
-            if (tmdb_providers.results.US) {
-                if (tmdb_providers.results.US.flatrate) {
-                    for (var i in tmdb_providers.results.US.flatrate) {
-                        mweb.push(`<a href=""><img src="https://image.tmdb.org/t/p/original${tmdb_providers.results.US.flatrate[i].logo_path}" height="25" width="25" style="vertical-align: text-top;" /></a>`)
+            if (tmdb_providers.results[region]) {
+                if (tmdb_providers.results[region].flatrate) {
+                    for (var i in tmdb_providers.results[region].flatrate) {
+                        mweb.push(`<a href=""><img src="https://image.tmdb.org/t/p/original${tmdb_providers.results[region].flatrate[i].logo_path}" height="25" width="25" style="vertical-align: text-top;" /></a>`)
                     }
                 }
             }
