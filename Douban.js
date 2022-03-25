@@ -23,7 +23,6 @@
     Author:
         Telegram: Neurogram
         GitHub: Neurogram-R
-
 */
 
 let url = $request.url
