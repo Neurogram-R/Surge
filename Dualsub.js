@@ -250,7 +250,7 @@ if (service == "YouTube") {
 
     let patt = new RegExp(`lang=${setting.tl}`)
 
-    if (url.replace(/&lang=zh&/, "&lang=zh-CN&").match(patt) || url.match(/&tlang=/)) $done({})
+    if (url.replace(/&lang=zh(-Hans)*&/, "&lang=zh-CN&").replace(/&lang=zh-Hant&/, "&lang=zh-TW&").match(patt) || url.match(/&tlang=/)) $done({})
 
     let t_url = `${url}&tlang=${setting.tl == "zh-CN" ? "zh-Hans" : setting.tl == "zh-TW" ? "zh-Hant" : setting.tl}`
 
