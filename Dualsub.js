@@ -209,7 +209,7 @@ if (url.match(/action=get/)) {
     delete setting.t_subtitles_url
     delete setting.subtitles
     delete setting.external_subtitles
-    $done({ response: { body: JSON.stringify(setting) } })
+    $done({ response: { body: JSON.stringify(setting), headers: { "Content-Type": "application/json" } } })
 }
 
 if (url.match(/action=set/)) {
@@ -235,7 +235,7 @@ if (url.match(/action=set/)) {
     delete settings[service].t_subtitles_url
     delete settings[service].subtitles
     delete settings[service].external_subtitles
-    $done({ response: { body: JSON.stringify(settings[service]) } })
+    $done({ response: { body: JSON.stringify(settings[service]), headers: { "Content-Type": "application/json" } } })
 }
 
 if (setting.type == "Disable") $done({})
