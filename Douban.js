@@ -1,78 +1,82 @@
 /*
     Douban Movie Add-ons for Surge by Neurogram
 
-        - 豆瓣电影移动版网页增强
-        - 快捷跳转 茶杯狐 搜索
-        - 展示在映流媒体平台
-        - 快捷收藏电影至 Airtable
+        - 豆瓣电影网页插件
+        - 快捷跳转自定义网站搜索
+        - 展示在映流媒体平台（TMDB API）
 
     使用说明
 
         [Script]
-        // 茶杯狐、流媒体
-        http-response ^https://m.douban.com/movie/subject/.+ script-path=Douban.js,requires-body=true,max-size=307200
-
-        // Airtable 收藏
-        http-request ^https://m.douban.com/movie/subject/.+\?seen=\d script-path=Douban.js
+        Douban = type=http-response, pattern=https:\/\/m(ovie)*\.douban\.com\/(movie\/)*subject\/.+, requires-body=1, max-size=0, timeout=30, script-path=Douban.js
 
         [MITM]
-        hostname = m.douban.com
+        hostname = m.douban.com, movie.douban.com
 
-        收藏功能，需自行修改代码，点击 想看 / 看过 触发收藏
-   
     Author:
         Telegram: Neurogram
         GitHub: Neurogram-R
 */
 
-let url = $request.url
-let movieId = url.match(/subject\/(\d+)/)
-let seen = url.match(/\?seen=(\d)$/)
-let collect = false  //收藏功能，默认关闭，需自行配置
-let region = "US" //流媒体区域
-let tmdb_api_key = "" // TMDB API KEY
 
-if (!seen) douban_addons()
-if (seen) collect_movie()
+const url = $request.url
+const movieId = url.match(/subject\/(\d+)/)?.[1]
+const platform = url.includes('movie.douban.com') ? 'web' : 'mobile'
+
+const tmdb_region = 'US' // TMDB 查询区域
+const tmdb_api_key = '' // TMDB API Key
+
+// 可自定义添加网站搜索（格式：['名称', '搜索链接', '图标链接']，%@ 代表电影标题）
+const watch_web_data = [
+    ['247看', 'https://247kan.com/search?q=%@', 'https://247kan.com/favicon.ico'],
+    ['Cupfox', 'https://www.cupfox.in/search?q=%@', 'https://picx.zhimg.com/80/v2-de36e385e59fcca2df694b76f108431a.png'],
+    ['LIBIVO', 'https://www.libvio.fun/search/-------------.html?wd=%@', 'https://www.libvio.fun/statics/img/favicon.ico']
+]
+
+function send_request(options, method = 'get') {
+    return new Promise((resolve, reject) => {
+        $httpClient[method](options, function (error, response, data) {
+            if (error) return reject('Error')
+            resolve(JSON.parse(data))
+        })
+    })
+}
 
 async function douban_addons() {
+
     let body = $response.body
-    let title = body.match(/"sub-title">([^<]+)/)
+    const title = body.match(/"sub-title">([^<]+)/)?.[1] ?? body.match(/<i class="">(.+)?的剧情简介<\/i>/)?.[1]
+
     if (!title) $done({})
-    if (collect) body = body.replace(/<a.+pbtn.+wish.+>/, `<a href="${url}?seen=0">`)
-    if (collect) body = body.replace(/<a.+pbtn.+collect.+>/, `<a href="${url}?seen=1">`)
 
-    let mweb = [`<a href="https://www.cupfox.app/search?key=${title[1]}"><img src="https://files.catbox.moe/c8vszl.png" height="25" width="34.78" style="vertical-align: text-top;" /></a>`]
-    let douban_options = {
-        url: `https://frodo.douban.com/api/v2/movie/${movieId[1]}?apiKey=0ac44ae016490db2204ce0a042db2916`,
-        headers: {
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.3(0x18000323) NetType/WIFI Language/en",
-            "Referer": "https://servicewechat.com/wx2f9b06c1de1ccfca/82/page-frame.html"
-        }
-    }
+    if (tmdb_api_key) {
 
-    let douban_result = await send_request(douban_options, "get")
-
-    if ((douban_result.type == "movie" || douban_result.type == "tv") && douban_result.original_title && tmdb_api_key) {
-
-        let tbdb_query_options = {
-            url: `https://api.themoviedb.org/3/search/${douban_result.type}?api_key=${tmdb_api_key}&query=${encodeURIComponent(douban_result.original_title.replace(/Season \d+$/, ""))}&page=1`
-        }
-        let tmdb_query = await send_request(tbdb_query_options, "get")
-
-        if (tmdb_query.results[0]) {
-
-            let providers_query_options = {
-                url: `https://api.themoviedb.org/3/${douban_result.type}/${tmdb_query.results[0].id}/watch/providers?api_key=${tmdb_api_key}`
+        const douban_result = await send_request({
+            url: `https://frodo.douban.com/api/v2/movie/${movieId}?apiKey=0ac44ae016490db2204ce0a042db2916`,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.3(0x18000323) NetType/WIFI Language/en',
+                'Referer': 'https://servicewechat.com/wx2f9b06c1de1ccfca/82/page-frame.html'
             }
+        })
 
-            let tmdb_providers = await send_request(providers_query_options, "get")
+        if (['movie', 'tv'].includes(douban_result.type) && douban_result.original_title) {
 
-            if (tmdb_providers.results[region]) {
-                if (tmdb_providers.results[region].flatrate) {
-                    for (var i in tmdb_providers.results[region].flatrate) {
-                        mweb.push(`<a href=""><img src="https://image.tmdb.org/t/p/original${tmdb_providers.results[region].flatrate[i].logo_path}" height="25" width="25" style="vertical-align: text-top;" /></a>`)
+            const tmdb_query = await send_request({
+                url: `https://api.themoviedb.org/3/search/${douban_result.type}?api_key=${tmdb_api_key}&query=${encodeURIComponent(douban_result.original_title.replace(/Season \d+$/, ''))}&page=1`
+            })
+
+            if (tmdb_query.results[0]) {
+
+                const tmdb_providers = await send_request({
+                    url: `https://api.themoviedb.org/3/${douban_result.type}/${tmdb_query.results[0].id}/watch/providers?api_key=${tmdb_api_key}`
+                })
+
+                if (tmdb_providers.results[tmdb_region]?.flatrate) {
+
+                    for (const provider of tmdb_providers.results[tmdb_region].flatrate) {
+                        watch_web_data.push([provider.provider_name, '', `https://image.tmdb.org/t/p/original${provider.logo_path}`])
                     }
+
                 }
             }
 
@@ -80,92 +84,17 @@ async function douban_addons() {
 
     }
 
-    body = body.replace(/("sub-title">.+?)(<\/div>)/, `$1${mweb.join("\n")}$2`)
+    const html_data = []
+
+    for (let i = 0; i < watch_web_data.length; i++) {
+        html_data.push(`<a href="${watch_web_data[i][1].replace(/%@/, title)}"><img src="${watch_web_data[i][2]}" height="25" style="width: auto; vertical-align: text-top;" /></a>`)
+    }
+
+    if (platform == 'web') body = body.replace(/(<span property="v:itemreviewed">(.|\n)+?)<\/h1>/, `$1${html_data.join('\n')}</h1>$2`)
+    if (platform == 'mobile') body = body.replace(/("sub-title">.+?)(<\/div>)/, `$1<br>${html_data.join('\n')}$2`)
 
     $done({ body })
 
 }
 
-async function collect_movie() {
-    let options = {
-        url: `https://frodo.douban.com/api/v2/movie/${movieId[1]}?apiKey=0ac44ae016490db2204ce0a042db2916`,
-        headers: {
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.3(0x18000323) NetType/WIFI Language/en",
-            "Referer": "https://servicewechat.com/wx2f9b06c1de1ccfca/82/page-frame.html"
-        }
-    }
-
-    let douban_result = await send_request(options, "get")
-
-    if (douban_result.msg == "movie_not_found") {
-        $notification.post('豆瓣电影', data.msg, "");
-        $done({ url: url.replace(/\?seen=\d/, "") })
-    }
-
-    let casts = ""
-    for (var i = 0; i < douban_result.actors.length; i++) {
-        casts = casts + douban_result.actors[i].name + " / "
-    }
-    let directors = ""
-    for (var k = 0; k < douban_result.directors.length; k++) {
-        directors = directors + douban_result.directors[k].name + " / "
-    }
-    let title = douban_result.title + "  " + douban_result.original_title
-    let table = {
-        url: "https://api.airtable.com/v0/BASE_ID/Douban",
-        headers: {
-            Authorization: "Bearer API_KEY"
-        },
-        body: {
-            records: [
-                {
-                    "fields": {
-                        "Title": title,
-                        "Description": douban_result.intro,
-                        "Poster": [
-                            {
-                                "url": douban_result.pic.large
-                            }
-                        ],
-                        "Seen": seen[1] == 1 ? true : false,
-                        "Actors": casts.replace(/\s\/\s$/, ""),
-                        "Director": directors.replace(/\s\/\s$/, ""),
-                        "Genre": douban_result.genres.toString(),
-                        "Douban": "https://movie.douban.com/subject/" + movieId[1],
-                        "Rating": douban_result.rating.value,
-                        "Year": douban_result.year
-                    }
-                }
-            ]
-        }
-    }
-
-    let airtable_collect = await send_request(table, "post")
-
-    if (!airtable_collect.records) {
-        $notification.post('收藏失败', airtable_collect.error.type, airtable_collect.error.message);
-        $done({ url: url.replace(/\?seen=\d/, "") })
-    }
-
-    $notification.post('豆瓣电影', title + " 收藏成功", "");
-    $done({ url: url.replace(/\?seen=\d/, "") })
-}
-
-function send_request(options, method) {
-    return new Promise((resolve, reject) => {
-
-        if (method == "get") {
-            $httpClient.get(options, function (error, response, data) {
-                if (error) return reject('Error')
-                resolve(JSON.parse(data))
-            })
-        }
-
-        if (method == "post") {
-            $httpClient.post(options, function (error, response, data) {
-                if (error) return reject('Error')
-                resolve(JSON.parse(data))
-            })
-        }
-    })
-}
+douban_addons()
