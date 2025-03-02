@@ -23,10 +23,21 @@ const url = $request.url
 const movieId = url.match(/subject\/(\d+)/)?.[1]
 const platform = url.includes('movie.douban.com') ? 'web' : 'mobile'
 
-// 获取外部传入的参数或使用默认值
-const tmdb_region = $argument ? JSON.parse($argument).region || 'US' : 'US' // TMDB 查询区域
-const tmdb_api_key = $argument ? JSON.parse($argument).api_key || '' : '' // TMDB API Key
+let tmdb_region = 'US' // TMDB 查询区域
+let tmdb_api_key = '' // TMDB API Key
 
+// 安全解析参数
+if ($argument) {
+    try {
+        const arg = JSON.parse($argument)
+        if (typeof arg === 'object' && arg !== null) {
+            tmdb_region = arg.region || tmdb_region
+            tmdb_api_key = arg.api_key || tmdb_api_key
+        }
+    } catch (e) {
+        console.log('参数解析错误，使用默认值')
+    }
+}
 // 可自定义添加网站搜索（格式：['名称', '搜索链接', '图标链接']，%@ 代表电影标题）
 const watch_web_data = [
     ['247看', 'https://247kan.com/search?q=%@', 'https://247kan.com/favicon.ico'],
