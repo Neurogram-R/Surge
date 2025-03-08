@@ -45,7 +45,7 @@ function send_request(options, method = 'get') {
 async function douban_addons() {
 
     let body = $response.body
-    const title = body.match(/"sub-title">([^<]+)/)?.[1] ?? body.match(/<i class="">(.+)?的剧情简介<\/i>/)?.[1]
+    const title = body.match(/"sub-title">([^<]+)/)?.[1] ?? body.match(/<i>(.+)?的剧情简介<\/i>/)?.[1]
 
     if (!title) $done({})
 
