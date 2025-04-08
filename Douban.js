@@ -23,14 +23,15 @@ const url = $request.url
 const movieId = url.match(/subject\/(\d+)/)?.[1]
 const platform = url.includes('movie.douban.com') ? 'web' : 'mobile'
 
-const tmdb_region = 'US' // TMDB 查询区域
-const tmdb_api_key = '' // TMDB API Key
+const tmdb_region = $argument ? $argument.region || 'US' : 'US' // TMDB 查询区域
+const tmdb_api_key = $argument ? $argument.api_key || '' : '' // TMDB API Key
 
 // 可自定义添加网站搜索（格式：['名称', '搜索链接', '图标链接']，%@ 代表电影标题）
 const watch_web_data = [
     ['247看', 'https://247kan.com/search?q=%@', 'https://247kan.com/favicon.ico'],
     ['Cupfox', 'https://www.cupfox.in/search?q=%@', 'https://picx.zhimg.com/80/v2-de36e385e59fcca2df694b76f108431a.png'],
-    ['LIBIVO', 'https://www.libvio.fun/search/-------------.html?wd=%@', 'https://www.libvio.fun/statics/img/favicon.ico']
+    ['LIBIVO', 'https://www.libvio.fun/search/-------------.html?wd=%@', 'https://www.libvio.fun/statics/img/favicon.ico'],
+    ['NEODB', 'https://neodb.social/search?q=%@', 'https://neodb.social/s/img/logo.svg']
 ]
 
 function send_request(options, method = 'get') {
