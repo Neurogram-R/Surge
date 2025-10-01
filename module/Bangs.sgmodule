@@ -1,0 +1,10 @@
+#!name=Bangs
+#!desc=DuckDuckGo !Bangs Add-ons by Neurogram
+
+
+[URL Rewrite]
+https:\/\/www.google.com\/search\?q=([^&]*![^&]+).* https://duckduckgo.com/?q=$1 302
+
+
+[MITM]
+hostname = %APPEND% www.google.com
