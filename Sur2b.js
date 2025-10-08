@@ -21,7 +21,6 @@
 */
 
 
-
 const url = $request.url;
 let body, subtitleData;
 let conf = $persistentStore.read('Sur2bConf');
