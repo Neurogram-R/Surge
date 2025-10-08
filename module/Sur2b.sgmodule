@@ -1,0 +1,11 @@
+#!name=Sur2b
+#!desc=YouTube video summaries, subtitle translation
+#!category=Streaming
+#!author=Neurogram
+
+[Script]
+Sur2b = type=http-response,pattern=https:\/\/www.youtube.com\/api\/timedtext\?,requires-body=1,max-size=0,binary-body-mode=0,timeout=30,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Sur2b.js
+Sur2bConf = type=http-request,pattern=https:\/\/www.youtube.com\/api\/timedtextConf,requires-body=1,max-size=0,binary-body-mode=0,script-path=https://raw.githubusercontent.com/Neurogram-R/Surge/master/Sur2b.js
+
+[MITM]
+hostname = %APPEND% www.youtube.com
