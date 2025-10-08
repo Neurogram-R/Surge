@@ -26,6 +26,7 @@ let body, subtitleData;
 let conf = $persistentStore.read('Sur2bConf');
 const autoGenSub = url.includes('&kind=asr');
 const videoID = url.match(/(\?|&)v=([^&]+)/)?.[2];
+const sourceLang = url.match(/&lang=([^&]+)/)?.[1];
 let cache = $persistentStore.read('Sur2bCache') || '{}';
 cache = JSON.parse(cache);
 
@@ -59,20 +60,21 @@ cache = JSON.parse(cache);
     if (conf.videoSummary && subtitleData.maxT <= conf.summaryMaxMinutes * 60 * 1000) summaryContent = await summarizer();
     if (conf.videoTranslation && subtitleData.maxT <= conf.translationMaxMinutes * 60 * 1000) translatedBody = await translator();
 
-    if (summaryContent || translatedBody) {
+    if ((summaryContent || translatedBody) && videoID && sourceLang) {
 
         if (!cache[videoID]) cache[videoID] = {};
+        if (!cache[videoID][sourceLang]) cache[videoID][sourceLang] = {};
 
         if (summaryContent) {
-            cache[videoID].summary = {
+            cache[videoID][sourceLang].summary = {
                 content: summaryContent,
                 timestamp: new Date().getTime()
             };
         };
 
         if (translatedBody) {
-            if (!cache[videoID].translation) cache[videoID].translation = {};
-            cache[videoID].translation[conf.targetLanguage] = {
+            if (!cache[videoID][sourceLang].translation) cache[videoID][sourceLang].translation = {};
+            cache[videoID][sourceLang].translation[conf.targetLanguage] = {
                 content: translatedBody,
                 timestamp: new Date().getTime()
             };
@@ -89,8 +91,8 @@ cache = JSON.parse(cache);
 
 async function summarizer() {
 
-    if (cache[videoID]?.summary) {
-        $notification.post('YouTube 视频摘要', '', cache[videoID].summary.content);
+    if (cache[videoID]?.[sourceLang]?.summary) {
+        $notification.post('YouTube 视频摘要', '', cache[videoID][sourceLang].summary.content);
         return;
     };
 
@@ -131,8 +133,8 @@ async function summarizer() {
 
 async function translator() {
 
-    if (cache[videoID]?.translation?.[conf.targetLanguage]) {
-        body = cache[videoID].translation[conf.targetLanguage].content;
+    if (cache[videoID]?.[sourceLang]?.translation?.[conf.targetLanguage]) {
+        body = cache[videoID][sourceLang].translation[conf.targetLanguage].content;
         return;
     };
 
@@ -370,22 +372,37 @@ function sendRequest(options, method = 'get') {
 
 function cleanCache() {
     const now = Date.now();
-    const maxHours = conf.cacheMaxHours * 60 * 60 * 1000;
+    const maxMs = conf.cacheMaxHours * 60 * 60 * 1000;
 
-    if (cache.summary && (now - cache.summary.timestamp > maxHours)) delete cache.summary;
+    for (const itemKey of Object.keys(cache)) {
+        const item = cache[itemKey];
 
-    if (cache.translation) {
-        for (const lang in cache.translation) {
-            if (cache.translation[lang]) {
-                const item = cache.translation[lang];
-                if (item.timestamp && (now - item.timestamp > maxHours)) {
-                    delete cache.translation[lang];
-                }
-            }
+        for (const lang of Object.keys(item)) {
+            const langObj = item[lang];
+
+            if (langObj.summary && now - langObj.summary.timestamp > maxMs) {
+                delete langObj.summary;
+            };
+
+            if (langObj.translation) {
+
+                for (const tLang of Object.keys(langObj.translation)) {
+                    const tObj = langObj.translation[tLang];
+                    if (now - tObj.timestamp > maxMs) {
+                        delete langObj.translation[tLang];
+                    };
+                };
+
+                if (Object.keys(langObj.translation).length === 0) {
+                    delete langObj.translation;
+                };
+            };
+
+            if ((!langObj.summary) && (!langObj.translation)) delete item[lang];
         };
 
-        if (Object.keys(cache.translation).length === 0) {
-            delete cache.translation;
-        };
+        if (Object.keys(item).length === 0) delete cache[itemKey];
     };
-};
+
+    return cache;
+}
